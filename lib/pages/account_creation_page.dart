@@ -5,21 +5,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_messenger/pages/chat_list_page.dart';
 
 
-class LoginPage extends StatefulWidget {
+class AccountCreationPage extends StatefulWidget {
   @override
-  State createState() => new LoginPageState();
+  State createState() => new AccountCreationState();
 }
 
 
-class LoginPageState extends State<LoginPage> {
+class AccountCreationState extends State<AccountCreationPage> {
   final FirebaseAuth firebaseAuth  = FirebaseAuth.instance;
   BuildContext buildContext;
 
-  String signInErrorText = "";
-
+  String accountCreationErrorText = "";
+  
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _autoValidate = false;
-
+  
   String _username;
   String _password;
 
@@ -29,7 +29,7 @@ class LoginPageState extends State<LoginPage> {
     buildContext = context;
     return Scaffold(
       appBar: AppBar(
-        title: Text("Login Page"),
+        title: Text("Account Creation Page"),
       ),
       body: Center(
         child: new Form(
@@ -56,11 +56,11 @@ class LoginPageState extends State<LoginPage> {
                   _password = value;
                 },
               ),
-              new Text(signInErrorText),
+              new Text(accountCreationErrorText),
               new FlatButton(
                 color: Colors.green,
-                onPressed: _signInIfInputsValid,
-                child: Text("Sign in", style: TextStyle(color: Colors.black)),
+                onPressed: _signUpAndLoginIfInputsValid,
+                child: Text("Create Account", style: TextStyle(color: Colors.black)),
               ),
             ],
           ),
@@ -103,9 +103,9 @@ class LoginPageState extends State<LoginPage> {
   }
 
 
-  void _signInIfInputsValid() {
+  void _signUpAndLoginIfInputsValid() {
     if (_validateInputs()) {
-      signIn().then((FirebaseUser user) {
+      signUp().then((FirebaseUser user) {
         if (user != null) {
           Navigator.of(buildContext).push(MaterialPageRoute(builder: (BuildContext context) => new ChatListPage(user))).catchError((e) => print(e));
         }
@@ -114,15 +114,13 @@ class LoginPageState extends State<LoginPage> {
   }
 
   //Todo check internet connection
-  Future<FirebaseUser> signIn() async {
-    FirebaseUser user = await firebaseAuth.signInWithEmailAndPassword(email: _username + "@fake.com", password: _password).then((user) {return user;})
+  Future<FirebaseUser> signUp() async {
+    FirebaseUser user = await firebaseAuth.createUserWithEmailAndPassword(email: _username + "@fake.com", password: _password).then((user) {})
         .catchError((e) {
-          if (e.message == "There is no user record corresponding to this identifier. The user may have been deleted.") {
-            signInErrorText = "Username does not exist";
-          } else if (e.message == "The password is invalid or the user does not have a password.") {
-            signInErrorText = "The password is invalid";
+          if (e.message == "The email address is already in use by another account.") {
+            accountCreationErrorText = "The username ist already in use";
           } else {
-            signInErrorText = e.message;
+            accountCreationErrorText = e.message;
             print(e);
           }
 

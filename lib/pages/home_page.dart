@@ -1,26 +1,28 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_messenger/pages/account_creation_page.dart';
+import 'package:flutter_messenger/pages/login_page.dart';
+
 
 class HomePage extends StatelessWidget {
-  static final String route = "home-page";
-
-  final FirebaseUser user;
-
-  HomePage({this.user});
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Home Page"),
-      ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+        child: ListView(
+          shrinkWrap: true,
+          padding: EdgeInsets.all(10.0),
           children: <Widget>[
-            Text("${user.uid}"),
-            Text("${user.displayName}"),
-            Text("${user.isAnonymous}")
+            new Text("Flutter Messenger", style: new TextStyle(color: Colors.redAccent)),
+            new FlatButton(
+              color: Colors.green,
+              onPressed: () => Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new LoginPage())),
+              child: Text("Login", style: TextStyle(color: Colors.black)),
+            ),
+            new FlatButton(
+              color: Colors.green,
+              onPressed: () => Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new AccountCreationPage())),
+              child: Text("Create Account", style: TextStyle(color: Colors.black)),
+            ),
           ],
         ),
       ),

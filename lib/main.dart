@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_messenger/pages/chat_page.dart';
+import 'package:flutter_messenger/pages/home_page.dart';
 
 /*
 final ThemeData iOSTheme = new ThemeData(
@@ -43,6 +44,6 @@ void main() {
         return androidTheme;
       }
     },*/
-    home: new ChatPage(),
+    home: new HomePage(),
   ));
 }
