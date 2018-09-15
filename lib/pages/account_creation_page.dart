@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_messenger/pages/chat_list_page.dart';
+import 'package:flutter_messenger/utils/username_utils.dart';
 
 
 class AccountCreationPage extends StatefulWidget {
@@ -113,10 +114,13 @@ class AccountCreationState extends State<AccountCreationPage> {
     }
   }
 
+  // Todo future necessary???  vielleicht: function.then(...)
   //Todo check internet connection
   Future<FirebaseUser> signUp() async {
-    FirebaseUser user = await firebaseAuth.createUserWithEmailAndPassword(email: _username + "@fake.com", password: _password).then((user) {})
-        .catchError((e) {
+    FirebaseUser user = await firebaseAuth.createUserWithEmailAndPassword(
+        email: UsernameUtils.convertUsernameToEmail(_username),
+        password: _password
+    ).then((user) {}).catchError((e) {
           if (e.message == "The email address is already in use by another account.") {
             accountCreationErrorText = "The username ist already in use";
           } else {

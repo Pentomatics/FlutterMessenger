@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_messenger/pages/chat_list_page.dart';
+import 'package:flutter_messenger/utils/username_utils.dart';
 
 
 class LoginPage extends StatefulWidget {
@@ -115,8 +116,10 @@ class LoginPageState extends State<LoginPage> {
 
   //Todo check internet connection
   Future<FirebaseUser> signIn() async {
-    FirebaseUser user = await firebaseAuth.signInWithEmailAndPassword(email: _username + "@fake.com", password: _password).then((user) {return user;})
-        .catchError((e) {
+    FirebaseUser user = await firebaseAuth.signInWithEmailAndPassword(
+        email: UsernameUtils.convertUsernameToEmail(_username),
+        password: _password
+    ).then((user) {return user;}).catchError((e) {
           if (e.message == "There is no user record corresponding to this identifier. The user may have been deleted.") {
             signInErrorText = "Username does not exist";
           } else if (e.message == "The password is invalid or the user does not have a password.") {
