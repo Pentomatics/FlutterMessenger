@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_messenger/pages/chat_list_page.dart';
 import 'package:flutter_messenger/utils/username_utils.dart';
 
+// Todo ignore multiple button presses, creating the account needs some seconds
 
 class AccountCreationPage extends StatefulWidget {
   @override
@@ -95,8 +96,8 @@ class AccountCreationState extends State<AccountCreationPage> {
   }
 
   String _validatePassword(String password) {
-    if (password.length < 5)
-      return 'Password must have at least 5 charaters';
+    if (password.length < 6)
+      return 'Password must have at least 6 charaters';
     else if (password.length > 19)
       return 'Password must be less than 20 charaters';
     else

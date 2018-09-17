@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_messenger/pages/chat_list_page.dart';
 import 'package:flutter_messenger/utils/username_utils.dart';
 
+// Todo ignore multiple button presses, login needs some seconds
 
 class LoginPage extends StatefulWidget {
   @override
@@ -18,7 +19,7 @@ class LoginPageState extends State<LoginPage> {
 
   String signInErrorText = "";
 
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
   bool _autoValidate = false;
 
   String _username;
@@ -93,10 +94,10 @@ class LoginPageState extends State<LoginPage> {
     else
       return null;
   }
-
+// Todo login just say wrong password
   String _validatePassword(String password) {
-    if (password.length < 5)
-      return 'Password must have at least 5 charaters';
+    if (password.length < 6)
+      return 'Password must have at least 6 charaters';
     else if (password.length > 19)
       return 'Password must be less than 20 charaters';
     else
