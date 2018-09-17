@@ -1,10 +1,10 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_messenger/models/user.dart';
 import 'package:flutter_messenger/pages/chat_page.dart';
 
 class ChatListPage extends StatelessWidget {
-  final FirebaseUser user;
+  final User user;
 
   ChatListPage (this.user);
 
@@ -12,7 +12,7 @@ class ChatListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return new Scaffold(
         appBar: new AppBar(
-          title: new Text("Chat List Page"),
+          title: new Text("Chat List Page of " + user.name),
         ),
       body: new StreamBuilder(
         stream: Firestore.instance.collection("chats").snapshots(),

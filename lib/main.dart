@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_messenger/pages/home_page.dart';
-
+import 'package:flutter_messenger/pages/login_page.dart';
 
 
 // Todo
@@ -46,6 +45,6 @@ void main() {
         return androidTheme;
       }
     },*/
-    home: new HomePage(),
+    home: new LoginPage(),
   ));
 }
