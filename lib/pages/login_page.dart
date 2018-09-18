@@ -8,6 +8,7 @@ import 'package:flutter_messenger/pages/chat_list_page.dart';
 
 // Todo ignore multiple button presses, login needs some seconds
 // Todo check internet connection
+// Todo transaction for creating a user
 
 class LoginPage extends StatefulWidget {
   @override
@@ -25,32 +26,48 @@ class LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     _buildContext = context;
-    return Scaffold(
-      body: Center(
-        child: ListView(
-          shrinkWrap: true,
-          padding: EdgeInsets.all(10.0),
-          children: <Widget>[
-            new Text("Flutter Messenger", style: new TextStyle(color: Colors.redAccent)),
-            new Form(
-              key: _formKey,
-              autovalidate: _autoValidate,
-              child: new TextFormField(
-                decoration: const InputDecoration(labelText: 'Username'),
-                keyboardType: TextInputType.text,
-                validator: _validateName,
-                onSaved: (String value) {
-                  _username = value;
-                },
-              ),
+
+    Widget authentication = new Container(
+      padding: EdgeInsets.all(48.0),
+      child: new Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          new Form(
+            key: _formKey,
+            autovalidate: _autoValidate,
+            child: new TextFormField(
+              decoration: const InputDecoration(labelText: 'Username'),
+              keyboardType: TextInputType.text,
+              validator: _validateName,
+              onSaved: (String value) {
+                _username = value;
+              },
             ),
-            new FlatButton(
+          ),
+          new Container(
+            padding: EdgeInsets.symmetric(vertical: 48.0),
+            child: new FlatButton(
               color: Colors.green,
               onPressed: _signInIfInputsAreValid,
               child: Text("Login", style: TextStyle(color: Colors.black)),
             ),
-          ],
-        ),
+          ),
+        ],
+      ),
+    );
+
+    return Scaffold(
+      body: new ListView(
+        children: <Widget>[
+          new Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              new Text("Flutter", style: new TextStyle(fontSize: 48.0, color: Colors.lightBlueAccent)),
+              new Text("Messenger", style: new TextStyle(fontSize: 48.0, color: Colors.lightBlueAccent)),
+              authentication,
+            ],
+          ),
+        ],
       ),
     );
   }
