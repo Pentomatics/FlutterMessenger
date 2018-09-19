@@ -1,7 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_messenger/models/ChatChannel.dart';
 import 'package:flutter_messenger/models/user.dart';
 import 'package:flutter_messenger/pages/chat_page.dart';
+import 'package:flutter_messenger/utils/firestore_collections.dart';
+import 'package:flutter_messenger/utils/firestore_utils.dart';
 
 // Todo dont show own user
 
@@ -19,7 +24,15 @@ class ChatListPageState extends State<ChatListPage> {
   final User _user;
   BuildContext _buildContext;
 
+  final _controller = TextEditingController();
+
   ChatListPageState (this._user);
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +61,7 @@ class ChatListPageState extends State<ChatListPage> {
         child: new Stack(
           children: <Widget>[
             new StreamBuilder(
-              stream: Firestore.instance.collection("chatChannels").snapshots(),
+              stream: Firestore.instance.collection(FirestoreCollections.CHAT_CHANNELS).snapshots(),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) return new Text("Loading...");
                 return Column (
@@ -86,15 +99,16 @@ class ChatListPageState extends State<ChatListPage> {
       context: _buildContext,
       builder: (BuildContext context) => (
           new AlertDialog(
-            title: new Text("Enter a chatname"),
+            title: new Text("Enter a chat name"),
             contentPadding: const EdgeInsets.all(16.0),
             content: new Row(
               children: <Widget>[
                 new Expanded(
                   child: new TextField(
+                    controller: _controller,
                     autofocus: true,
                     decoration: new InputDecoration(
-                    hintText: "Chatname"),
+                    hintText: "Chat name"),
                   ),
                 ),
               ],
@@ -108,22 +122,20 @@ class ChatListPageState extends State<ChatListPage> {
               new FlatButton(
                   child: const Text('OPEN'),
                   onPressed: () {
-                    Navigator.pop(_buildContext, "");
+                    Navigator.pop(_buildContext, _controller.text);
                   })
             ],
           )),
-    ).then<void>((String value) { // The value passed to Navigator.pop() or null.
-      if (value != null) {
-        print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa: " + value);
-      }
-    });
+    ).then<void>(_joinOrCreateAndJoinChatChannel);
   }
 
-  Widget _buildChatListItem(BuildContext context, DocumentSnapshot document) {
+  Widget _buildChatListItem(BuildContext context, DocumentSnapshot snapshot) {
+    ChatChannel chatChannel = ChatChannel.fromSnapshot(snapshot);
+
     return Card(
       color: Colors.white70,
       child: new InkWell(
-        onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => new ChatPage(_user, document["name"]))),
+        onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => new ChatPage(_user, chatChannel))),
         child: new Container(
           padding: EdgeInsets.all(14.0),
           child: new Row(
@@ -137,10 +149,10 @@ class ChatListPageState extends State<ChatListPage> {
                 child: new Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    new Text("iohih", style: Theme.of(context).textTheme.headline),
+                    new Text(chatChannel.name, style: Theme.of(context).textTheme.headline),
                     new Container(
                       margin: const EdgeInsets.only(top: 6.0),
-                      child: new Text("ohawoddwa"),
+                      child: new Text("--------Letzte Nachricht ----------- 12.20 Mock-----"),
                     ),
                   ],
                 ),
@@ -152,67 +164,16 @@ class ChatListPageState extends State<ChatListPage> {
     );
   }
 
-
-
-
-
-
-
-
-
-
-/*
-  String _chatname = "";
-
-
-  _handleOnPressed() {
-    _askChatname(buildContext);
+  _joinOrCreateAndJoinChatChannel(String chatName) {
+    if (chatName != null && chatName != "") {
+      FirestoreUtils.getChatChannel(chatName).then((chatChannel) {
+        if (chatChannel != null) {
+          Navigator.of(_buildContext).push(MaterialPageRoute(builder: (BuildContext context) => new ChatPage(_user, chatChannel)));
+        } else {
+          chatChannel = FirestoreUtils.createChatChannel(chatName);
+          Navigator.of(_buildContext).push(MaterialPageRoute(builder: (BuildContext context) => new ChatPage(_user, chatChannel)));
+        }
+      });
+    }
   }
-
-
-  _askChatname(BuildContext context) {
-    final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
-
-    showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (_) => new AlertDialog(
-          title: new Text("Enter a chatname: "),
-          /*children: <Widget>[
-            new Form(
-              key: _formKey,
-              child: new TextFormField(
-                decoration: const InputDecoration(labelText: 'Chatname'),
-                keyboardType: TextInputType.text,
-                validator: _validateChatName,
-                onSaved: (String value) {
-                  _chatname = value;
-                },
-              ),
-            ),
-            new Text("jojojawd")
-          ],*/
-          actions: <Widget>[
-            new FlatButton(
-              child: new Text("Cancel"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            new FlatButton(
-              child: new Text("OK"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        )
-    );
-  }
-
-  String _validateChatName(String chatname) {
-    if (chatname != "")
-      return "Chatname must have at least one character";
-    return null;
-  }*/
 }

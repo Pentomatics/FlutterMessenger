@@ -2,21 +2,22 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_messenger/UI/message_widget.dart';
+import 'package:flutter_messenger/models/ChatChannel.dart';
 import 'package:flutter_messenger/models/text_message.dart';
 import 'package:flutter_messenger/models/user.dart';
 
 class ChatPage extends StatefulWidget {
   final User _currentUser;
-  final String _chatName;
+  final ChatChannel _chatChannel;
 
-  ChatPage(this._currentUser, this._chatName);
+  ChatPage(this._currentUser, this._chatChannel);
 
   @override
-  State createState() => new ChatPageState(_currentUser, _chatName);
+  State createState() => new ChatPageState(_currentUser, _chatChannel);
 }
 
 class ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
-  final String _chatName;
+  final ChatChannel _chatChannel;
   final User _currentUser;
 
   final List<Message> _messageWidgets = <Message>[];
@@ -24,13 +25,13 @@ class ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
 
   bool _isWriting = false;
 
-  ChatPageState(this._currentUser, this._chatName);
+  ChatPageState(this._currentUser, this._chatChannel);
 
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
-        title: new Text(_chatName),
+        title: new Text(_chatChannel.name),
       ),
       body: new Column(
         children: <Widget>[
