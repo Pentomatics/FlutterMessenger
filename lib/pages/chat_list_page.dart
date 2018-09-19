@@ -5,18 +5,32 @@ import 'package:flutter_messenger/pages/chat_page.dart';
 
 // Todo dont show own user
 
-class ChatListPage extends StatelessWidget {
-  final User user;
+class ChatListPage extends StatefulWidget {
+  final User _user;
 
-  ChatListPage (this.user);
+  ChatListPage (this._user);
+
+  @override
+  State createState() => new ChatListPageState(_user);
+}
+
+
+class ChatListPageState extends State<ChatListPage> {
+  final User _user;
+  BuildContext _buildContext;
+
+  ChatListPageState (this._user);
 
   @override
   Widget build(BuildContext context) {
+    _buildContext = context;
     return new Scaffold(
       appBar: new AppBar(
-        title: new Text("Chat List Page of " + user.name),
+        title: new Text("Chat List Page of " + _user.name),
         actions: <Widget>[
-          /*PopupMenuButton<Choice>(
+          /*
+          // Todo
+          PopupMenuButton<Choice>(
             onSelected: _select,
             itemBuilder: (BuildContext context) {
               return choices.skip(2).map((Choice choice) {
@@ -57,7 +71,7 @@ class ChatListPage extends StatelessWidget {
                 tooltip: 'Toggle',
                 child: IconButton(
                   icon: new Icon(Icons.add),
-                  onPressed: () => {},
+                  onPressed: _showDialog,
                 ),
               ),
             ),
@@ -67,11 +81,49 @@ class ChatListPage extends StatelessWidget {
     );
   }
 
+  _showDialog() async {
+    showDialog<String>(
+      context: _buildContext,
+      builder: (BuildContext context) => (
+          new AlertDialog(
+            title: new Text("Enter a chatname"),
+            contentPadding: const EdgeInsets.all(16.0),
+            content: new Row(
+              children: <Widget>[
+                new Expanded(
+                  child: new TextField(
+                    autofocus: true,
+                    decoration: new InputDecoration(
+                    hintText: "Chatname"),
+                  ),
+                ),
+              ],
+            ),
+            actions: <Widget>[
+              new FlatButton(
+                  child: const Text('CANCEL'),
+                  onPressed: () {
+                    Navigator.pop(_buildContext);
+                  }),
+              new FlatButton(
+                  child: const Text('OPEN'),
+                  onPressed: () {
+                    Navigator.pop(_buildContext, "");
+                  })
+            ],
+          )),
+    ).then<void>((String value) { // The value passed to Navigator.pop() or null.
+      if (value != null) {
+        print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa: " + value);
+      }
+    });
+  }
+
   Widget _buildChatListItem(BuildContext context, DocumentSnapshot document) {
     return Card(
       color: Colors.white70,
       child: new InkWell(
-        onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => new ChatPage(user, document["name"]))),
+        onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => new ChatPage(_user, document["name"]))),
         child: new Container(
           padding: EdgeInsets.all(14.0),
           child: new Row(
@@ -100,7 +152,14 @@ class ChatListPage extends StatelessWidget {
     );
   }
 
-  
+
+
+
+
+
+
+
+
 
 /*
   String _chatname = "";
