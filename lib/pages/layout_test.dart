@@ -6,10 +6,7 @@ import 'package:flutter_messenger/models/user.dart';
 import 'package:flutter_messenger/pages/chat_list_page.dart';
 
 
-// Todo ignore multiple button presses, login needs some seconds
-// Todo check internet connection
-// Todo transaction for creating a user
-
+// Todo delete
 class LayoutTestPage extends StatefulWidget {
   @override
   State createState() => new LayoutTestPageState();

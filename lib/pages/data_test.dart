@@ -5,6 +5,7 @@ import 'package:flutter_messenger/models/ChatChannel.dart';
 import 'package:flutter_messenger/models/user.dart';
 import 'package:flutter_messenger/pages/login_page.dart';
 
+// Todo delete
 class DataTestPage extends StatefulWidget {
 
   @override
@@ -38,7 +39,7 @@ class DataTestPageState extends State<DataTestPage> {
 
   _createNewChatChannel() {
 
-    ChatChannel chatChannel = new ChatChannel("Chat 01", "oho");
+    ChatChannel chatChannel = new ChatChannel("Chat 01");
     Firestore.instance.collection("chatChannels").add(chatChannel.toJson());
     /*
     Firestore.instance.collection("chatChannels").where("name", isEqualTo: chatName).getDocuments().then((snapshot) {
