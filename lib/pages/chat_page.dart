@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_messenger/UI/message_widget.dart';
 import 'package:flutter_messenger/models/ChatChannel.dart';
 import 'package:flutter_messenger/models/text_message.dart';
 import 'package:flutter_messenger/models/user.dart';
+import 'package:flutter_messenger/utils/firestore_utils.dart';
 
 class ChatPage extends StatefulWidget {
   final User _currentUser;
@@ -20,7 +20,6 @@ class ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
   final ChatChannel _chatChannel;
   final User _currentUser;
 
-  final List<Message> _messageWidgets = <Message>[];
   final TextEditingController _textController = new TextEditingController();
 
   bool _isWriting = false;
@@ -35,23 +34,23 @@ class ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
       ),
       body: new Column(
         children: <Widget>[
-          new FlatButton(
-            color: Colors.green,
-            onPressed: () => _createMessage,
-            child: new Text("do it", style: TextStyle(color: Colors.black)),
-          ),
-          new Flexible(
-            child: new ListView.builder(
-              itemBuilder: (context, index) => _messageWidgets[index],
-                  //(context, int index) => _messages[index], // _ means nothing or null?... it doesn't matter
-              itemCount: _messageWidgets.length,
-              reverse: true,
-              padding: new EdgeInsets.all(6.0),
-            )
+          new StreamBuilder(
+            stream: Firestore.instance.collection(FirestoreUtils.CHAT_CHANNELS).document("-LMmfWzSjWRGUlXfVDxJ").collection("messages").orderBy("time", descending: true).snapshots(),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) return new Text("Loading...");
+              return Flexible (
+                  child: new ListView.builder(
+                    itemCount: snapshot.data.documents.length,
+                    itemBuilder: (context, index) => _buildMessageItem(context, snapshot.data.documents[index]),
+                    reverse: true,
+                    padding: new EdgeInsets.all(6.0),
+                  ),
+              );
+            },
           ),
           new Divider(height: 1.0),
           new Container(
-            child: _buildComposer(),
+            child: _buildMessageInputContainer(),
             decoration: new BoxDecoration(color: Theme.of(context).cardColor),
           ),
         ],
@@ -59,13 +58,36 @@ class ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
     );
   }
 
-  _createMessage() {
-    //TextMessage textMessage = new TextMessage("ein text", _currentUser.name, new DateTime.now());
-    //Firestore.instance.collection("users").add(user.toJson());
+  Widget _buildMessageItem(BuildContext context, DocumentSnapshot snapshot) {
+    TextMessage message = TextMessage.fromSnapshot(snapshot);
+
+    return new Container(
+      margin: const EdgeInsets.symmetric(vertical: 8.0),
+      child: new Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          new Container(
+            margin: const EdgeInsets.only(right: 10.0),
+            child: new CircleAvatar(child: new Text(message.author)),
+          ),
+          new Expanded(
+            child: new Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                new Text(message.author, style: Theme.of(context).textTheme.subhead),
+                new Container(
+                  margin: const EdgeInsets.only(top: 6.0),
+                  child: new Text(message.text),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
-  // The (input) Container at the bottom
-  Widget _buildComposer() {
+  Widget _buildMessageInputContainer() {
     return new IconTheme(
       data: new IconThemeData(color: Theme.of(context).accentColor),
       child: new Container(
@@ -111,28 +133,16 @@ class ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
     );
   }
 
-  @override
-  void dispose() {
-    for (Message message in _messageWidgets) {
-      message.animationController.dispose();
-    }
-    super.dispose();
-  }
-
   void _submitMessage(String text) {
     _textController.clear();
     setState(() {
       _isWriting = false;
     });
 
-    Message message = new Message(
-        _currentUser.name,
-        text,
-        new AnimationController(
-            vsync: this, duration: new Duration(milliseconds: 800)));
-    setState(() {
-      _messageWidgets.insert(0, message);
+    TextMessage textMessage = new TextMessage(_currentUser.name, text, new DateTime.now());
+
+    FirestoreUtils.getChatChannelDocument(_chatChannel.name).then((document) {
+      FirestoreUtils.sendMessage(textMessage, document.documentID);
     });
-    message.animationController.forward();
   }
 }
