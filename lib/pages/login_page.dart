@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_messenger/models/user.dart';
 import 'package:flutter_messenger/pages/chat_list_page.dart';
-import 'package:flutter_messenger/utils/firestore_collections.dart';
+import 'package:flutter_messenger/utils/firestore_utils.dart';
 
 
 // Todo ignore multiple button presses, login needs some seconds
@@ -116,7 +116,7 @@ class LoginPageState extends State<LoginPage> {
   _signIn() {
     User user;
 
-    Firestore.instance.collection(FirestoreCollections.USERS).where("name", isEqualTo: _username).getDocuments().then((snapshot) {
+    Firestore.instance.collection(FirestoreUtils.USERS).where("name", isEqualTo: _username).getDocuments().then((snapshot) {
       user = User.fromSnapshot(snapshot.documents.first);
       Navigator.of(_buildContext).push(MaterialPageRoute(builder: (BuildContext context) => new ChatListPage(user)));
     });
@@ -124,14 +124,14 @@ class LoginPageState extends State<LoginPage> {
 
   _addNewUserAccount() {
     User user = new User(_username);
-    Firestore.instance.collection(FirestoreCollections.USERS).add(user.toJson());
+    Firestore.instance.collection(FirestoreUtils.USERS).add(user.toJson());
   }
 
 
   Future<bool> _usernameExists(String username) async {
     bool exists = false;
 
-    await Firestore.instance.collection(FirestoreCollections.USERS).where("name", isEqualTo: username).getDocuments().then((snapshot) {
+    await Firestore.instance.collection(FirestoreUtils.USERS).where("name", isEqualTo: username).getDocuments().then((snapshot) {
       exists = (snapshot.documents.length >= 1);
     });
 

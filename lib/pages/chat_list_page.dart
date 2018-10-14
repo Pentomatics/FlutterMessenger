@@ -1,32 +1,29 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_messenger/models/ChatChannel.dart';
 import 'package:flutter_messenger/models/user.dart';
 import 'package:flutter_messenger/pages/chat_page.dart';
-import 'package:flutter_messenger/utils/firestore_collections.dart';
 import 'package:flutter_messenger/utils/firestore_utils.dart';
 
 // Todo dont show own user
 
 class ChatListPage extends StatefulWidget {
-  final User _user;
+  final User _currentUser;
 
-  ChatListPage (this._user);
+  ChatListPage (this._currentUser);
 
   @override
-  State createState() => new ChatListPageState(_user);
+  State createState() => new ChatListPageState(_currentUser);
 }
 
 
 class ChatListPageState extends State<ChatListPage> {
-  final User _user;
+  final User _currentUser;
   BuildContext _buildContext;
 
-  final _controller = TextEditingController();
+  final TextEditingController _controller = TextEditingController();
 
-  ChatListPageState (this._user);
+  ChatListPageState (this._currentUser);
 
   @override
   void dispose() {
@@ -39,7 +36,7 @@ class ChatListPageState extends State<ChatListPage> {
     _buildContext = context;
     return new Scaffold(
       appBar: new AppBar(
-        title: new Text("Chat List Page of " + _user.name),
+        title: new Text("Chat List Page of " + _currentUser.name),
         actions: <Widget>[
           /*
           // Todo
@@ -61,7 +58,7 @@ class ChatListPageState extends State<ChatListPage> {
         child: new Stack(
           children: <Widget>[
             new StreamBuilder(
-              stream: Firestore.instance.collection(FirestoreCollections.CHAT_CHANNELS).snapshots(),
+              stream: Firestore.instance.collection(FirestoreUtils.CHAT_CHANNELS).snapshots(),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) return new Text("Loading...");
                 return Column (
@@ -81,7 +78,6 @@ class ChatListPageState extends State<ChatListPage> {
               child: FloatingActionButton(
                 backgroundColor: Colors.lightBlue,
                 onPressed: () => {},
-                tooltip: 'Toggle',
                 child: IconButton(
                   icon: new Icon(Icons.add),
                   onPressed: _showDialog,
@@ -135,7 +131,7 @@ class ChatListPageState extends State<ChatListPage> {
     return Card(
       color: Colors.white70,
       child: new InkWell(
-        onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => new ChatPage(_user, chatChannel))),
+        onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => new ChatPage(_currentUser, chatChannel))),
         child: new Container(
           padding: EdgeInsets.all(14.0),
           child: new Row(
@@ -168,10 +164,10 @@ class ChatListPageState extends State<ChatListPage> {
     if (chatName != null && chatName != "") {
       FirestoreUtils.getChatChannel(chatName).then((chatChannel) {
         if (chatChannel != null) {
-          Navigator.of(_buildContext).push(MaterialPageRoute(builder: (BuildContext context) => new ChatPage(_user, chatChannel)));
+          Navigator.of(_buildContext).push(MaterialPageRoute(builder: (BuildContext context) => new ChatPage(_currentUser, chatChannel)));
         } else {
           chatChannel = FirestoreUtils.createChatChannel(chatName);
-          Navigator.of(_buildContext).push(MaterialPageRoute(builder: (BuildContext context) => new ChatPage(_user, chatChannel)));
+          Navigator.of(_buildContext).push(MaterialPageRoute(builder: (BuildContext context) => new ChatPage(_currentUser, chatChannel)));
         }
       });
     }
