@@ -19,7 +19,6 @@ class ChatListPage extends StatefulWidget {
 
 class ChatListPageState extends State<ChatListPage> {
   final User _currentUser;
-  BuildContext _buildContext;
 
   final TextEditingController _controller = TextEditingController();
 
@@ -33,7 +32,6 @@ class ChatListPageState extends State<ChatListPage> {
 
   @override
   Widget build(BuildContext context) {
-    _buildContext = context;
     return new Scaffold(
       appBar: new AppBar(
         title: new Text("Chat List Page of " + _currentUser.name),
@@ -92,7 +90,7 @@ class ChatListPageState extends State<ChatListPage> {
 
   _showDialog() async {
     showDialog<String>(
-      context: _buildContext,
+      context: context,
       builder: (BuildContext context) => (
           new AlertDialog(
             title: new Text("Enter a chat name"),
@@ -113,12 +111,12 @@ class ChatListPageState extends State<ChatListPage> {
               new FlatButton(
                   child: const Text('CANCEL'),
                   onPressed: () {
-                    Navigator.pop(_buildContext);
+                    Navigator.pop(context);
                   }),
               new FlatButton(
                   child: const Text('OPEN'),
                   onPressed: () {
-                    Navigator.pop(_buildContext, _controller.text);
+                    Navigator.pop(context, _controller.text);
                   })
             ],
           )),
@@ -171,10 +169,10 @@ class ChatListPageState extends State<ChatListPage> {
     if (chatName != null && chatName != "") {
       FirestoreUtils.getChatChannel(chatName).then((chatChannel) {
         if (chatChannel != null) {
-          Navigator.of(_buildContext).push(MaterialPageRoute(builder: (BuildContext context) => new ChatPage(_currentUser, chatChannel)));
+          Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => new ChatPage(_currentUser, chatChannel)));
         } else {
           chatChannel = FirestoreUtils.createChatChannel(chatName);
-          Navigator.of(_buildContext).push(MaterialPageRoute(builder: (BuildContext context) => new ChatPage(_currentUser, chatChannel)));
+          Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => new ChatPage(_currentUser, chatChannel)));
         }
       });
     }

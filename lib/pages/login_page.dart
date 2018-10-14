@@ -1,11 +1,8 @@
-import 'dart:async';
 import 'dart:convert';
 import 'package:convert/convert.dart';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_messenger/models/user.dart';
 import 'package:flutter_messenger/pages/chat_list_page.dart';
 import 'package:flutter_messenger/utils/firestore_utils.dart';
 
@@ -21,7 +18,6 @@ class LoginPage extends StatefulWidget {
 
 
 class LoginPageState extends State<LoginPage> {
-  BuildContext _buildContext;
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
   bool _autoValidate = false;
 
@@ -30,12 +26,9 @@ class LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    _buildContext = context;
-
     return Scaffold(
       body: new Center(
         child: new ListView(
-          shrinkWrap: true,
           children: <Widget>[
             new Container(
               margin: EdgeInsets.all(48.0),
@@ -117,7 +110,7 @@ class LoginPageState extends State<LoginPage> {
       FirestoreUtils.getUserByName(_username).then((user) {
         if (user != null) {
           if (_password == user.password) {
-            Navigator.of(_buildContext).push(MaterialPageRoute(builder: (BuildContext context) => new ChatListPage(user)));
+            Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => new ChatListPage(user)));
           } else {
             _showDialog("Wrong password");
           }
@@ -130,10 +123,10 @@ class LoginPageState extends State<LoginPage> {
 
   _onSignUpButtonPress() {
     if (_validateInputs()) {
-      FirestoreUtils.getUserByName(_username).then((user) async {
+      FirestoreUtils.getUserByName(_username).then((user) {
         if (user == null) {
           FirestoreUtils.createUser(_username, _password).then((user) {
-            Navigator.of(_buildContext).push(MaterialPageRoute(builder: (BuildContext context) => new ChatListPage(user)));
+            Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => new ChatListPage(user)));
           });
         } else {
           _showDialog("Username does already exist");
