@@ -134,23 +134,30 @@ class ChatListPageState extends State<ChatListPage> {
         onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => new ChatPage(_currentUser, chatChannel))),
         child: new Container(
           padding: EdgeInsets.all(14.0),
-          child: new Row(
-            children: <Widget>[
+          child: Row(
+            children: [
               new CircleAvatar(
                   radius: 24.0,
-                  child: new Text("CHAT")
+                  child: new Text("CHATNAME")
               ),
-              new Container(
-                padding: EdgeInsets.only(left: 14.0),
-                child: new Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    new Text(chatChannel.name, style: Theme.of(context).textTheme.headline),
-                    new Container(
-                      margin: const EdgeInsets.only(top: 6.0),
-                      child: new Text("--------Letzte Nachricht ----------- 12.20 Mock-----"),
-                    ),
-                  ],
+              Expanded(
+                child: new Container(
+                  padding: EdgeInsets.only(left: 14.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      new Text(chatChannel.name, style: Theme.of(context).textTheme.headline),
+                      new Row(
+                        //margin: const EdgeInsets.only(top: 6.0),
+                        children: <Widget>[
+                          new Text("--------Letzte Nachricht -----------"),
+                          new Expanded(
+                            child: new Text("12.20", textAlign: TextAlign.right),
+                          )
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],

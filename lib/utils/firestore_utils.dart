@@ -3,16 +3,34 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_messenger/models/ChatChannel.dart';
 import 'package:flutter_messenger/models/text_message.dart';
+import 'package:flutter_messenger/models/user.dart';
 
 
 abstract class FirestoreUtils {
 
   static const String USERS = "users";
   static const String CHAT_CHANNELS = "chatChannels";
-  
+
   static CollectionReference _chatChannelsCollectionRef = Firestore.instance.collection(CHAT_CHANNELS);
   
-  
+
+  static Future<User> getUserByName(String username) async {
+    User user;
+    await Firestore.instance.collection(USERS).where("name", isEqualTo: username).getDocuments().then((snapshots) {
+      if (snapshots.documents.length >= 1)
+        user = User.fromSnapshot(snapshots.documents.first);
+    });
+
+    return user;
+  }
+
+  static Future<User> createUser(String username, String password) async {
+    User user = new User(username, password);
+    await Firestore.instance.collection(USERS).add(user.toJson());
+    return user;
+  }
+
+
   static Future<ChatChannel> getChatChannel(String chatName) async {
     ChatChannel chatChannel;
     await Firestore.instance.collection(CHAT_CHANNELS).where("name", isEqualTo: chatName).getDocuments().then((snapshots) {
