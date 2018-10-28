@@ -29,6 +29,7 @@ class LoginPageState extends State<LoginPage> {
     return Scaffold(
       body: new Center(
         child: new ListView(
+          shrinkWrap: true,
           children: <Widget>[
             new Container(
               margin: EdgeInsets.all(48.0),
@@ -43,7 +44,6 @@ class LoginPageState extends State<LoginPage> {
                       key: _formKey,
                       autovalidate: _autoValidate,
                       child: new Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: <Widget>[
                           new TextFormField(
                             decoration: new InputDecoration(labelText: 'Username'),
@@ -68,7 +68,6 @@ class LoginPageState extends State<LoginPage> {
                   new Container(
                     padding: EdgeInsets.symmetric(vertical: 16.0),
                     child: new Row(
-                      mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         new Container(
@@ -100,7 +99,7 @@ class LoginPageState extends State<LoginPage> {
   }
 
   String generateMd5(String data) {
-    List<int> content = new Utf8Encoder().convert(data);
+    List<int> content = utf8.encode(data);
     Digest digest = md5.convert(content);
     return hex.encode(digest.bytes);
   }

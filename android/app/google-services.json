@@ -1,27 +1,27 @@
 {
   "project_info": {
-    "project_number": "161103435788",
-    "firebase_url": "https://fluttermessenger.firebaseio.com",
-    "project_id": "fluttermessenger",
-    "storage_bucket": "fluttermessenger.appspot.com"
+    "project_number": "237244602340",
+    "firebase_url": "https://crossplattformmessenger-c69c6.firebaseio.com",
+    "project_id": "crossplattformmessenger-c69c6",
+    "storage_bucket": "crossplattformmessenger-c69c6.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:161103435788:android:fc57656a5659fb75",
+        "mobilesdk_app_id": "1:237244602340:android:fc57656a5659fb75",
         "android_client_info": {
           "package_name": "com.example.fluttermessenger"
         }
       },
       "oauth_client": [
         {
-          "client_id": "161103435788-k7diou38agm4m98k5hssb8k149nqsee4.apps.googleusercontent.com",
+          "client_id": "237244602340-sc8b3vt3kuv1f9r44e8t2ogmrqtopimq.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDaw61wQv8yVnsR1PqtaIG-SUhFcLfl2PI"
+          "current_key": "AIzaSyAX1VTDaYPUF_ow-yq6BFIAwav6NbNbuPY"
         }
       ],
       "services": {

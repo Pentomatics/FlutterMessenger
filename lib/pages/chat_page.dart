@@ -23,8 +23,13 @@ class ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
   final TextEditingController _textController = new TextEditingController();
 
   bool _isWriting = false;
+  String _channelID = "";
 
-  ChatPageState(this._currentUser, this._chatChannel);
+  ChatPageState(this._currentUser, this._chatChannel) {
+    FirestoreUtils.getChatChannelDocument(_chatChannel.name).then((document) {
+      _channelID = document.documentID;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +40,7 @@ class ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
       body: new Column(
         children: <Widget>[
           new StreamBuilder(
-            stream: Firestore.instance.collection(FirestoreUtils.CHAT_CHANNELS).document("-LMmfWzSjWRGUlXfVDxJ").collection("messages").orderBy("time", descending: true).snapshots(),
+            stream: Firestore.instance.collection(FirestoreUtils.CHAT_CHANNELS).document(_channelID).collection("messages").orderBy("time", descending: true).snapshots(),
             builder: (context, snapshot) {
               if (!snapshot.hasData) return new Text("Loading...");
               return Flexible (
