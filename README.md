@@ -9,3 +9,9 @@ klicken kann. Alternativ kann man die Bibliotheken über die Flutter Konsole mit
 "flutter packages get" einbinden. Genaueres kann der Herstellerseite entnommen werden:
 https://flutter.io/setup-windows/
 
+
+Die Datenbank wird in naher Zukunft gelöscht. Daher muss für die Ausführung der Anwendung
+möglicherweise eine neue Datenbank aufgesetzt und die Konfigurationsdaten in das Projekt
+eingefügt werden. Genaueres kann auf der Herstellerseite nachgelesen werden:
+https://firebase.google.com/
+
