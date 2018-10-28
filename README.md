@@ -1,7 +1,5 @@
 # flutter_messenger
 
-A new Flutter application.
-
 ## IDE und Abhängigkeiten
 
 Das Projekt kann einfach in Android Studio geöffnet werden. Nach dem öffnen müssen noch die
