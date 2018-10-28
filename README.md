@@ -2,7 +2,10 @@
 
 A new Flutter application.
 
-## Getting Started
+## IDE und Abhängigkeiten
 
-For help getting started with Flutter, view our online
-[documentation](https://flutter.io/).
+Das Projekt kann einfach in Android Studio geöffnet werden. Nach dem öffnen müssen noch die
+Bibliotheken eingebunden werden. Wenn das Flutter Plugin installiert ist, sollte Android Studio
+eine entsprechende Meldung Anzeigen, in der man auf "Get dependencies" klicken kann. Alternativ
+kann man die Bibliotheken über die Flutter Konsole mit dem Befehl "flutter packages get" einbinden.
+
