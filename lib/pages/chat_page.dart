@@ -27,7 +27,9 @@ class ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
 
   ChatPageState(this._currentUser, this._chatChannel) {
     FirestoreUtils.getChatChannelDocument(_chatChannel.name).then((document) {
-      _channelID = document.documentID;
+      setState(() {
+        _channelID = document.documentID;
+      });
     });
   }
 
@@ -109,31 +111,18 @@ class ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
                 },
                 onSubmitted: _submitMessage,
                 decoration:
-                    new InputDecoration.collapsed(hintText: "Enter Message"),
+                    new InputDecoration.collapsed(hintText: "Enter message"),
               ),
             ),
             new Container(
               margin: new EdgeInsets.symmetric(horizontal: 3.0),
-              child: Theme.of(context).platform == TargetPlatform.iOS
-                  ? new CupertinoButton(
-                      child: new Text("Submit"),
-                      onPressed: _isWriting
-                          ? () => _submitMessage(_textController.text)
-                          : null,
-                    )
-                  : new IconButton(
-                      icon: new Icon(Icons.message),
-                      onPressed: _isWriting
-                          ? () => _submitMessage(_textController.text)
-                          : null,
-                    ),
+              child: new IconButton(
+                icon: new Icon(Icons.message),
+                onPressed: _isWriting ? () => _submitMessage(_textController.text) : null,
+              ),
             ),
           ],
         ),
-        decoration: Theme.of(context).platform == TargetPlatform.iOS
-            ? new BoxDecoration(
-                border: new Border(top: new BorderSide(color: Colors.brown)))
-            : null,
       ),
     );
   }
